@@ -1,4 +1,4 @@
-public class DoublyLinkedList<T> {
+public class DoublyLinkedList <T> {
     private DoublyLinkedNode<T> first;
     private DoublyLinkedNode<T> last;
     int size = 0;
@@ -40,7 +40,7 @@ public class DoublyLinkedList<T> {
     public T removeFirst() {
         DoublyLinkedNode<T> temp = first;
         //if empty
-        if (first == null && last == null) {
+        if (first == null) {
             return null;
         }
         //if index is 1
@@ -58,7 +58,7 @@ public class DoublyLinkedList<T> {
     }
 
     public T removeLast() {
-       DoublyLinkedNode<T> temp = last;
+        DoublyLinkedNode<T> temp = last;
         if (first == null)
             return null;
         if (first == last) {
@@ -68,45 +68,71 @@ public class DoublyLinkedList<T> {
         }
         last = last.getPrev();
         last.setNext(null);
+        size--;
         return temp.getData();
     }
 
     public void addIndex(int loc, T data) {
-        MyListNode<T> iData = new MyListNode<>(data);
-        //edge cases
-        if (first == null) {
-            first = iData;
+        DoublyLinkedNode<T> dataNode = new DoublyLinkedNode<>(data);
+        if (loc > size || loc < 0)//loc > size
+            throw new ArrayIndexOutOfBoundsException("INDEX IS NOT IN LIST");
+
+        if (first == null) {//empty
+            addFirst(dataNode.getData());
             return;
         }
-        if (n >= size)
-            throw new ArrayIndexOutOfBoundsException("N INDEX IS TOO BIG FOR LiST");
 
-        //previous
-        //current
-
-        MyListNode<T> previous = first;
-        MyListNode<T> current = first.getNext();
-        if (n == 0) {
-            iData.setNext(first);
-            first = iData;
+        if (loc == 0) {
+            addFirst(dataNode.getData());
             return;
         }
-        if (n == size) {
-            MyListNode<T> lastVar = last;
-            lastVar.setNext(iData);
+        if (loc == size) {
+            addLast(dataNode.getData());
+            return;
         }
-        for (int i = 1; i < n; i++) {
+
+        DoublyLinkedNode<T> previous = first;
+        DoublyLinkedNode<T> current = first.getNext();
+        for (int i = 1; i < loc; i++) {
             previous = current;
             current = current.getNext();
-        }//current = n
-
-        previous.setNext(iData);
-        iData.setNext(current);
+        }
+        previous.setNext(dataNode);
+        dataNode.setNext(current);
+        size++;
     }
 
-    public T removeInt(int loc) {
-        return null;
+    public T removeIndex(int loc) {
+        if (loc > size || loc < 0)//loc > size loc < 0
+            throw new ArrayIndexOutOfBoundsException("INDEX LOC IS NOT IN LIST");
+
+        if (first == null) {
+            throw new ArrayIndexOutOfBoundsException("LIST IS EMPTY");
+        }
+
+        if (loc == 0) {
+            T data = removeFirst();
+            return data;
+        }
+        if (loc == size) {
+            T data = removeLast();
+            return data;
+        }
+
+        DoublyLinkedNode<T> previous = first;
+        DoublyLinkedNode<T> current = first.getNext();
+        for (int i = 1; i < loc; i++) {
+            previous = current;
+            current = current.getNext();
+        }
+        T removedData = current.getData();
+        current = current.getNext();
+        previous.setNext(current);
+        size--;
+        return removedData;
     }
+
+
 
     public String toString() {
         DoublyLinkedNode<T> current = first;
